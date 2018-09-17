@@ -17,5 +17,8 @@
 	},
 	"suggest": {
         "ext-uuid" : "*"
-    }
+    },
+	"bin" : [
+		"bin/redis_delay_daemon"
+	]
 }

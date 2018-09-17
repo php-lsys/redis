@@ -26,16 +26,30 @@ class MQ{
         $this->_delay_suffix=$delay_suffix;
     }
     protected function _delay_list_name($topic){
+        if (is_array($topic)){
+            $out=array();
+            foreach ($topic as $v){
+                $out[$v]=$this->_delay_list_name($v);
+            }
+            return $out;
+        }
         return $topic.$this->_delay_suffix;
     }
     protected function _wait_list_name($topic){
+        if (is_array($topic)){
+            $out=array();
+            foreach ($topic as $v){
+                $out[$v]=$this->_wait_list_name($v);
+            }
+            return $out;
+        }
         return $topic.$this->_wait_suffix;
     }
     protected function _ack_list_name($topic){
         if (is_array($topic)){
             $out=[];
             foreach ($topic as $k=>$v){
-                $out[$v]=$v.$this->_ack_suffix;
+                $out[$v]=$this->_ack_list_name($v);
             }
             return $out;
         }
@@ -140,36 +154,46 @@ class MQ{
     }
     /**
      * 延时队列后台处理daemon
-     * @param string $topic
+     * @param string|array $topic
      */
     public function delay_daemon($topic){
-        $waitname=$this->_wait_list_name($topic);
+        $waitname_=$waitname=$this->_wait_list_name($topic);
+        if (!is_array($waitname))$waitname=[$topic=>$waitname];
+        else $waitname=array_flip($waitname);
+        if (is_array($waitname_))$waitname_=array_values($waitname_);
         $delayname=$this->_delay_list_name($topic);
+        if (!is_array($delayname))$delayname=[$topic=>$delayname];
         $redis=$this->_redis();
         if(!$redis->getOption(Redis::OPT_READ_TIMEOUT)){
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
         }
+        $delayname_=$delayname;
         while (true){
-            $time=time();
-            $data=$redis->zRangeByScore($delayname, 0, $time);
-            if (is_array($data))foreach ($data as $v){
-                //加个事务靠谱点
-                $redis->multi();
-                $redis->lPush($topic,$v);
-                $redis->zRem($delayname, $v);
-                $redis->exec();
-            }
-            $data=$redis->zRange($delayname, 0, 0,1);
-            if (is_array($data))$data=array_shift($data);
-            if (empty($data)){
-                $wait=true;
-            }else{
-                $wait=$data-time();
+            $wait=true;
+            foreach ($delayname_ as $topic=>$_delayname){
+                $time=time();
+                $data=$redis->zRangeByScore($_delayname, 0, $time);
+                if (is_array($data))foreach ($data as $v){
+                    //加个事务靠谱点
+                    $redis->multi();
+                    $redis->lPush($topic,$v);
+                    $redis->zRem($_delayname, $v);
+                    $redis->exec();
+                }
+                $data=$redis->zRange($_delayname, 0, 0,1);
+                if (is_array($data))$data=array_shift($data);
+                if (!empty($data)){
+                    $_wait=intval($data-time());
+                    if($wait===true||$wait>=$_wait)$wait=$_wait;
+                }
             }
             if($wait>0){
                 if($wait===true)$wait=0;
-                $wait=intval($wait);
-                $redis->brPop($waitname,$wait);//阻塞休眠
+                $_=$redis->brPop($waitname_,$wait);//阻塞休眠
+                if(count($_)==2){
+                    list($_topic)=$_;
+                    $delayname_=[$waitname[$_topic]=>$this->_delay_list_name($_topic)];
+                }else $delayname_=$delayname;
             }
         }
     }
