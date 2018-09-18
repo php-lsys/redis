@@ -21,9 +21,14 @@ class DI extends \LSYS\DI{
             $config=\LSYS\Config\DI::get()->config($config?$config:self::$config);
             return new \LSYS\Redis($config);
         }));
-        !isset($di->redis_mq)&&$di->redis_mq(new \LSYS\DI\SingletonCallback(function()use($di){
-            return new \LSYS\Redis\MQ($di->redis());
-        }));
+        !isset($di->redis_mq)&&$di->redis_mq(
+			new \LSYS\DI\ShareCallback(function($config=null){
+				return $config?$config:self::$config;
+			},function($config=null)use($di){
+				$config=\LSYS\Config\DI::get()->config($config?$config:self::$config);
+				return new \LSYS\Redis\MQ($di->redis($config));
+			})
+		);
         return $di;
     }
 }

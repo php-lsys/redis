@@ -2,7 +2,7 @@
 	"name" : "lsys/redis",
 	"type" : "library",
 	"license": "Apache-2.0",
-	"version" : "1.0.0",
+	"version" : "1.0.1",
 	"description" : "lsys module redis",
 	"autoload" : {
 		"psr-4" : {
