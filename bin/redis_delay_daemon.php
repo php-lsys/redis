@@ -11,6 +11,8 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 if (isset($argv)&&array_search( "--help",$argv)||count($argv)==1){
 	echo "delay message daemon:\n";
 	echo "\t--topic= your delay topic,more topic split use[,]\n";	
+	echo "\t--config_dir= config dir\n";
+	echo "\t--config= config name\n";	
 	exit;
 }
 function cli_param($name,$defalut=NULL){
@@ -29,6 +31,10 @@ function cli_param($name,$defalut=NULL){
 	return $defalut;
 };
 
+$config=cli_param("config_dir",null);
+if ($config!=null) LSYS\Config\File::dirs(array($config));
+
+$config=cli_param("config",null);
 
 $topic=cli_param("topic");
 $topic=explode(",",$topic);
@@ -36,6 +42,6 @@ foreach ($topic as $k=>$v){
     if (empty($v))unset($topic[$k]);
 }
 if(!count($topic))die("topic is empty");
-$redismq=\LSYS\Redis\DI::get()->redis_mq();
+$redismq=\LSYS\Redis\DI::get()->redis_mq($config);
 $redismq->delay_daemon($topic);
 
