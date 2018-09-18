@@ -6,4 +6,11 @@ $r=\LSYS\Redis\DI::get()->redis()->set("aa","ccc");
 print_r($r);
 ```
 
+延时队列daemon:
+```
+php bin/redis_delay_daemon.php 
+--topic= 队列名,多个用分号分割 
+--config_dir=  配置目录
+```
+
 其他示例参考:/dome/目录
