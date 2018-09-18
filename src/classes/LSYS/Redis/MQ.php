@@ -86,6 +86,7 @@ class MQ{
         $redis=$this->_redis();
         $data=$this->_uuid().$message;
         if ($delay>0){
+           // var_dump($this->_delay_list_name($topic),time()+$delay,$data);
             $status=$redis->zAdd($this->_delay_list_name($topic),time()+$delay,$data);
             $redis->lPush($this->_wait_list_name($topic),1);
             return $status;
@@ -158,7 +159,7 @@ class MQ{
      */
     public function delay_daemon($topic){
         $waitname_=$waitname=$this->_wait_list_name($topic);
-        if (!is_array($waitname))$waitname=[$topic=>$waitname];
+        if (!is_array($waitname))$waitname=[$waitname=>$topic];
         else $waitname=array_flip($waitname);
         if (is_array($waitname_))$waitname_=array_values($waitname_);
         $delayname=$this->_delay_list_name($topic);
@@ -170,6 +171,7 @@ class MQ{
         $delayname_=$delayname;
         while (true){
             $wait=true;
+          //  var_dump($delayname_);
             foreach ($delayname_ as $topic=>$_delayname){
                 $time=time();
                 $data=$redis->zRangeByScore($_delayname, 0, $time);
@@ -181,18 +183,21 @@ class MQ{
                     $redis->exec();
                 }
                 $data=$redis->zRange($_delayname, 0, 0,1);
+              //  var_dump($_delayname,$data);
                 if (is_array($data))$data=array_shift($data);
                 if (!empty($data)){
                     $_wait=intval($data-time());
                     if($wait===true||$wait>=$_wait)$wait=$_wait;
                 }
             }
+           // var_dump($wait);
             if($wait>0){
                 if($wait===true)$wait=0;
                 $_=$redis->brPop($waitname_,$wait);//阻塞休眠
+              //  var_dump($_);
                 if(count($_)==2){
                     list($_topic)=$_;
-                    $delayname_=[$waitname[$_topic]=>$this->_delay_list_name($_topic)];
+                    $delayname_=[$waitname[$_topic]=>$this->_delay_list_name($waitname[$_topic])];
                 }else $delayname_=$delayname;
             }
         }

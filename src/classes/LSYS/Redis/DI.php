@@ -25,7 +25,6 @@ class DI extends \LSYS\DI{
 			new \LSYS\DI\ShareCallback(function($config=null){
 				return $config?$config:self::$config;
 			},function($config=null)use($di){
-				$config=\LSYS\Config\DI::get()->config($config?$config:self::$config);
 				return new \LSYS\Redis\MQ($di->redis($config));
 			})
 		);
