@@ -142,6 +142,7 @@ class MQ{
                 }
             }
         }
+        
         $message=$redis->brPop($topic,$timeout);
         if (!$ack&&isset($message[1])){
             $_ackname=$this->_ack_list_name($message[0]);
