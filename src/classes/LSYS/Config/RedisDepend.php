@@ -11,7 +11,7 @@ class RedisDepend extends DI{
         if(!self::has())self::set(function(){
             return (new self)
             ->config_redis(new MethodCallback(function(){
-                return \LSYS\Database\DI::get()->db();
+                return \LSYS\Redis\DI::get()->redis();
             }))
             ->config_redis_key(new MethodCallback(function(){
                 return 'lsys_config';
