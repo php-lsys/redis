@@ -16,7 +16,8 @@
 		"lsys/core" : "~1.0.0"
 	},
 	"suggest": {
-        "ext-uuid" : "*"
+        "ext-uuid" : "*",
+        "lsys/cli" : "~1.0.0 daemon utils"
     },
 	"bin" : [
 		"bin/redis_delay_daemon"
