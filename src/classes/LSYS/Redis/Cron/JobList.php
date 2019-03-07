@@ -11,7 +11,7 @@ interface JobList{
      * 获取job列表
      * @return Job[]
      */
-    public function get_list();
+    public function getList();
     /**
      * 删除指定job
      * @param Job $job

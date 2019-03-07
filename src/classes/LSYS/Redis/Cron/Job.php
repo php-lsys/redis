@@ -13,12 +13,12 @@ class Job{
 	public function __construct($topic,$message,Timer $timer=null){
 		$this->topic=$topic;
 		$this->message=$message;
-		if ($timer)$this->set_timer($timer);
+		if ($timer)$this->setTimer($timer);
 	}
-	public function get_topic(){
+	public function getTopic(){
 		return $this->topic;
 	}
-	public function get_message(){
+	public function getMessage(){
 		return $this->message;
 	}
 	/**
@@ -26,7 +26,7 @@ class Job{
 	 * @param Timer $timer
 	 * @return $this
 	 */
-	public function set_timer(Timer $timer){
+	public function setTimer(Timer $timer){
 		$this->timer=$timer;
 		return $this;
 	}
@@ -34,7 +34,7 @@ class Job{
 	 * 返回运行时间对象
 	 * @return Timer
 	 */
-	public function get_timer(){
+	public function getTimer(){
 		if ($this->timer==null)$this->timer=new Timer();
 		return $this->timer;
 	}
@@ -42,17 +42,17 @@ class Job{
 	 * 计算下一次执行的时间
 	 * @return int
 	 */
-	public function get_next_run_time($now_time=null){
-		$timer=$this->get_timer();
+	public function getNextRunTime($now_time=null){
+		$timer=$this->getTimer();
 		if ($now_time==null)$now_time=time();
 		
-		$h=$timer->get_hours();
-		$i=$timer->get_minutes();
-		$s=$timer->get_seconds();
-		$d=$timer->get_day();
-		$m=$timer->get_month();
-		$y=$timer->get_year();
-		$w=$timer->get_week();
+		$h=$timer->getHours();
+		$i=$timer->getMinutes();
+		$s=$timer->getSeconds();
+		$d=$timer->getDay();
+		$m=$timer->getMonth();
+		$y=$timer->getYear();
+		$w=$timer->getWeek();
 
 		$nh=date("G",$now_time);
 		$ni=intval(date("i",$now_time));
@@ -63,43 +63,43 @@ class Job{
 		$nw=date("w",$now_time);
 
 		//定量循环
-		if(Timer::is_loop($y)){
-			$loop_val=Timer::parse_loop($y);
-			$_m=Timer::is_fix($m)?$m:'01';
-			$_d=Timer::is_fix($d)?$d:'01';
-			$_h=Timer::is_fix($h)?$h:'00';
-			$_i=Timer::is_fix($i)?$i:'00';
-			$_s=Timer::is_fix($s)?$s:'00';
+		if(Timer::isLoop($y)){
+			$loop_val=Timer::parseLoop($y);
+			$_m=Timer::isFix($m)?$m:'01';
+			$_d=Timer::isFix($d)?$d:'01';
+			$_h=Timer::isFix($h)?$h:'00';
+			$_i=Timer::isFix($i)?$i:'00';
+			$_s=Timer::isFix($s)?$s:'00';
 			return strtotime(date("Y",strtotime("+ {$loop_val} year",$now_time))."-{$_m}-{$_d} {$_h}:{$_i}:{$_s}");
 		}
-		if(Timer::is_loop($m)){
-			$loop_val=Timer::parse_loop($m);
-			$_d=Timer::is_fix($d)?$d:'01';
-			$_h=Timer::is_fix($h)?$h:'00';
-			$_i=Timer::is_fix($i)?$i:'00';
-			$_s=Timer::is_fix($s)?$s:'00';
+		if(Timer::isLoop($m)){
+			$loop_val=Timer::parseLoop($m);
+			$_d=Timer::isFix($d)?$d:'01';
+			$_h=Timer::isFix($h)?$h:'00';
+			$_i=Timer::isFix($i)?$i:'00';
+			$_s=Timer::isFix($s)?$s:'00';
 			return strtotime(date("Y-m",strtotime("+ {$loop_val} months",$now_time))."-{$_d} {$_h}:{$_i}:{$_s}");
 		}
-		if(Timer::is_loop($d)){
-			$loop_val=Timer::parse_loop($d);
-			$_h=Timer::is_fix($h)?$h:'00';
-			$_i=Timer::is_fix($i)?$i:'00';
-			$_s=Timer::is_fix($s)?$s:'00';
+		if(Timer::isLoop($d)){
+			$loop_val=Timer::parseLoop($d);
+			$_h=Timer::isFix($h)?$h:'00';
+			$_i=Timer::isFix($i)?$i:'00';
+			$_s=Timer::isFix($s)?$s:'00';
 			return strtotime(date("Y-m-d",strtotime("+ {$loop_val} day",$now_time))." {$_h}:{$_i}:{$_s}");
 		}
-		if(Timer::is_loop($h)){
-			$loop_val=Timer::parse_loop($h);
-			$_i=Timer::is_fix($i)?$i:'00';
-			$_s=Timer::is_fix($s)?$s:'00';
+		if(Timer::isLoop($h)){
+			$loop_val=Timer::parseLoop($h);
+			$_i=Timer::isFix($i)?$i:'00';
+			$_s=Timer::isFix($s)?$s:'00';
 			return strtotime(date("Y-m-d H",strtotime("+ {$loop_val} hours",$now_time)).":{$_i}:{$_s}");
 		}
-		if(Timer::is_loop($i)){
-			$loop_val=Timer::parse_loop($i);
-			$_s=Timer::is_fix($s)?$s:'00';
+		if(Timer::isLoop($i)){
+			$loop_val=Timer::parseLoop($i);
+			$_s=Timer::isFix($s)?$s:'00';
 			return strtotime(date("Y-m-d H:i",strtotime("+ {$loop_val} minute",$now_time)).":{$_s}");
 		}
-		if(Timer::is_loop($s)){
-			$loop_val=Timer::parse_loop($s);
+		if(Timer::isLoop($s)){
+			$loop_val=Timer::parseLoop($s);
 			return strtotime("+ {$loop_val} seconds",$now_time);
 		}
 		
@@ -108,16 +108,16 @@ class Job{
 		//s i G j n Y
 		//2016 11 11 22 22 22
 		//8-31 9-31 9-30
-		list($n,$_s)=$this->_op_find($s, $ns,0, 59,false);
-		list($n,$_i)=$this->_op_find($i, $ni,0, 59,!$n);
-		list($n,$_h)=$this->_op_find($h, $nh,0, 23,!$n);//
+		list($n,$_s)=$this->_opFind($s, $ns,0, 59,false);
+		list($n,$_i)=$this->_opFind($i, $ni,0, 59,!$n);
+		list($n,$_h)=$this->_opFind($h, $nh,0, 23,!$n);//
 
 		if ($w!==Timer::LOOP){//以星期循环
-			list($n,$next)=$this->_loop_find($w, $nw, 0, 6,!$n);
+			list($n,$next)=$this->_loopFind($w, $nw, 0, 6,!$n);
 			if ($n==true){
 				$nt=strtotime("+ {$next} day",$now_time);
 				$_y=date("Y",strtotime("+ {$next} day",$now_time));
-				$__y=$this->_val_find($y, $_y);
+				$__y=$this->_valFind($y, $_y);
 				if ($__y!=$_y&&$y!==Timer::LOOP){//跨过年
 					$_y=$__y;
 					if ($_y===false) return false;//没下一年
@@ -134,15 +134,15 @@ class Job{
 				}
 			}
 		}else{//以月日循环
-			list($n,$_d)=$this->_op_find($d, $nd,1, date("t",$now_time),!$n);
+			list($n,$_d)=$this->_opFind($d, $nd,1, date("t",$now_time),!$n);
 			$year=0;
 			$maxm=max(is_array($m)?$m:array($m));
 			$x=($n==true||$nm>$maxm)?false:true;
 			while (true){
 				//$m 规则 $nm 当前月份 8-31 9
-				list($_n,$_m)=$this->_op_find($m, $nm,1,12,$x);
+				list($_n,$_m)=$this->_opFind($m, $nm,1,12,$x);
 				if ($_n)$year++;
-				if ($_d>$this->_method_day($_m,date("L",strtotime(($ny+$year)."-{$_m}-01 0:00:01")))){
+				if ($_d>$this->_methodDay($_m,date("L",strtotime(($ny+$year)."-{$_m}-01 0:00:01")))){
 					$x=false;
 					$nm=$_m;
 				}else break;
@@ -170,7 +170,7 @@ class Job{
 		return strtotime($dt);
 	}
 	//得到某个月的最大天数
-	protected function _method_day($m,$y=true){
+	protected function _methodDay($m,$y=true){
 		$m31=array(1,3,5,7,8,10,12);
 		$m30=array(4,6,9,11);
 		if(in_array($m, $m31)) return 31;
@@ -179,7 +179,7 @@ class Job{
 		else return 28;
 	}
 	//查找某值的下一个规则值
-	protected function _val_find($var,$now_var){
+	protected function _valFind($var,$now_var){
 		$bad=true;
 		$var=is_array($var)?$var:array($var);
 		$max_var=max($var);
@@ -194,7 +194,7 @@ class Job{
 		return $now_var;
 	}
 	//按规则返回下个数间的间隔
-	protected function _loop_find($var,$now_var,$start,$end,$is_cp=false){
+	protected function _loopFind($var,$now_var,$start,$end,$is_cp=false){
 		if($var===Timer::LOOP){
 			if ($is_cp){
 				return array(true,0);
@@ -232,7 +232,7 @@ class Job{
 		}
 	}
 	//按规则返回下个数
-	protected function _op_find($var,$now_var,$start,$end,$is_cp=false){
+	protected function _opFind($var,$now_var,$start,$end,$is_cp=false){
 		$_m=false;
 		if($var===Timer::LOOP){
 			if ($is_cp){

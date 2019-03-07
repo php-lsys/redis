@@ -23,7 +23,7 @@ class Callback implements JobList{
         if (is_callable($this->_finish))call_user_func($this->_finish,$job);
         return $this;
     }
-    public function get_list(){
+    public function getList(){
         $this->_jobs=call_user_func($this->_call);
         foreach ($this->_jobs as $k=>$v){
             if (!$v instanceof Job)unset($this->_jobs[$k]);

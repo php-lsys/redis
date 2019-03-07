@@ -22,8 +22,8 @@ class Redis implements Config,\Serializable{
 	 */
 	public function __construct ($name,RedisDepend $depend=null){
 	    $depend=$depend?$depend:RedisDepend::get();
-	    $redis=$depend->config_redis();
-	    $redis_key=$depend->config_redis_key();
+	    $redis=$depend->configRedis();
+	    $redis_key=$depend->configRedisKey();
 	    $this->_name=$name;
 	    $this->_redis=$redis->configConnect();
 	    $this->_save=$redis_key;
@@ -94,9 +94,9 @@ class Redis implements Config,\Serializable{
 	}
 	/**
 	 * {@inheritDoc}
-	 * @see \LSYS\Config::as_array()
+	 * @see \LSYS\Config::asArray()
 	 */
-	public function as_array (){
+	public function asArray(){
 		return $this->_node;
 	}
 	/**

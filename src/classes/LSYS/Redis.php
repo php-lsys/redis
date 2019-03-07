@@ -206,11 +206,11 @@ class Redis implements \Serializable{
      * @return \LSYS\Redis
      */
     public function configConnect(){
-        $_config=$this->_config->as_array()+array(
+        $_config=$this->_config->asArray()+array(
             'cluster'             	=> false,
         );
-        if (!$_config['cluster'])$this->_connect_redis();
-        else $this->_connect_redis_cluster();
+        if (!$_config['cluster'])$this->_connectRedis();
+        else $this->_connectRedisCluster();
         return $this;
     }
     /**
@@ -220,10 +220,10 @@ class Redis implements \Serializable{
     public function __invoke(){
         return $this->_redis;
     }
-    protected function _connect_redis(){
+    protected function _connectRedis(){
         if ($this->_redis&&$this->_redis->isConnected())return $this;
         if (!$this->_redis) $this->_redis=new \Redis();
-        $_config=$this->_config->as_array()+array(
+        $_config=$this->_config->asArray()+array(
             'host'             	=> 'localhost',
             'port'             	=> 6379,
             'timeout'			=> '60',
@@ -237,9 +237,9 @@ class Redis implements \Serializable{
             throw new Exception($e->getMessage().strtr(" [Host:host Port:port]",array("host"=>$_config['host'],"port"=>$_config['port'])),$e->getCode());
         }
     }
-    protected function _connect_redis_cluster(){
+    protected function _connectRedisCluster(){
         if ($this->_redis)return $this;
-        $_config=$this->_config->as_array()+array(
+        $_config=$this->_config->asArray()+array(
             'ini'             	=> NULL,
             'hosts'             => [],
         );

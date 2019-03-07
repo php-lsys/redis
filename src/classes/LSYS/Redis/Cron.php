@@ -29,12 +29,12 @@ class Cron{
      */
     public function reload(){
         $this->redis->configConnect();
-        $this->un_sleep('1');
+        $this->unSleep('1');
     }
-    protected function _job_init(){
+    protected function _jobInit(){
         $jobs=[];
-        foreach ($this->jobs->get_list() as $job){
-            $next_run_time=$job->get_next_run_time();
+        foreach ($this->jobs->getList() as $job){
+            $next_run_time=$job->getNextRunTime();
             if ($next_run_time===false)$next_run_time=time();
             $jobs[]=array($job,$next_run_time);
         }
@@ -45,7 +45,7 @@ class Cron{
      * @param int $time
      * @return $this
      */
-    protected function on_sleep($time){
+    protected function onSleep($time){
         $time=intval($time);
         $time=$time<=0?0:$time;
         $data=$this->redis->brPop($this->sleep_queue,$time);
@@ -56,7 +56,7 @@ class Cron{
      * 解除暂停
      * @return $this
      */
-    protected function un_sleep($cmd='0'){
+    protected function unSleep($cmd='0'){
         $this->redis->lPush($this->sleep_queue,$cmd);//
         return $this;
     }
@@ -69,11 +69,11 @@ class Cron{
         if (!$this->redis->getoption(Redis::OPT_READ_TIMEOUT)){
             $this->redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
         }
-        $mq=$mq?$mq:\LSYS\Redis\DI::get()->redis_mq();
+        $mq=$mq?$mq:\LSYS\Redis\DI::get()->redisMQ();
         $bulid_job=true;
         while (true){
             if($bulid_job){
-                $this->_job_init();
+                $this->_jobInit();
             }
             $now_time=time();
             $_times=array();
@@ -88,9 +88,9 @@ class Cron{
 //                 var_dump($offtime);
                 
                 if ($offtime<=0){
-                  //  var_dump($job->get_message());
-                    $mq->push($job->get_topic(), $job->get_message());
-                    $next_time=$job->get_next_run_time($run_time);
+                  //  var_dump($job->getMessage());
+                    $mq->push($job->getTopic(), $job->getMessage());
+                    $next_time=$job->getNextRunTime($run_time);
                     if ($next_time===false){
                         $this->jobs->finish($job);
                         unset($this->jobs_list[$k]);
@@ -110,7 +110,7 @@ class Cron{
                     continue;
                 }
             }
-            $bulid_job=boolval($this->on_sleep($sleep_time));
+            $bulid_job=boolval($this->onSleep($sleep_time));
         }
     }
 }

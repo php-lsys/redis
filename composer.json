@@ -2,7 +2,7 @@
 	"name" : "lsys/redis",
 	"type" : "library",
 	"license": "Apache-2.0",
-	"version" : "1.0.2",
+	"version" : "2.0.0",
 	"description" : "lsys module redis",
 	"autoload" : {
 		"psr-4" : {
@@ -12,12 +12,12 @@
 	"require" : {
 		"php" : ">=5.5",
 		"ext-redis" : "*",
-		"lsys/config" : "~1.0.0",
-		"lsys/core" : "~1.0.0"
+		"lsys/config" : "~2.0.0",
+		"lsys/core" : "~2.0.0"
 	},
 	"suggest": {
         "ext-uuid" : "*",
-        "lsys/cli" : "~1.0.0 daemon utils"
+        "lsys/cli" : "~2.0.0 daemon utils"
     },
 	"bin" : [
 		"bin/redis_delay_daemon"

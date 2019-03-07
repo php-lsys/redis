@@ -25,31 +25,31 @@ class MQ{
         $this->_wait_suffix=$wait_suffix;
         $this->_delay_suffix=$delay_suffix;
     }
-    protected function _delay_list_name($topic){
+    protected function _delayListName($topic){
         if (is_array($topic)){
             $out=array();
             foreach ($topic as $v){
-                $out[$v]=$this->_delay_list_name($v);
+                $out[$v]=$this->_delayListName($v);
             }
             return $out;
         }
         return $topic.$this->_delay_suffix;
     }
-    protected function _wait_list_name($topic){
+    protected function _waitListName($topic){
         if (is_array($topic)){
             $out=array();
             foreach ($topic as $v){
-                $out[$v]=$this->_wait_list_name($v);
+                $out[$v]=$this->_waitListName($v);
             }
             return $out;
         }
         return $topic.$this->_wait_suffix;
     }
-    protected function _ack_list_name($topic){
+    protected function _ackListName($topic){
         if (is_array($topic)){
             $out=[];
             foreach ($topic as $k=>$v){
-                $out[$v]=$this->_ack_list_name($v);
+                $out[$v]=$this->_ackListName($v);
             }
             return $out;
         }
@@ -86,9 +86,9 @@ class MQ{
         $redis=$this->_redis();
         $data=$this->_uuid().$message;
         if ($delay>0){
-           // var_dump($this->_delay_list_name($topic),time()+$delay,$data);
-            $status=$redis->zAdd($this->_delay_list_name($topic),time()+$delay,$data);
-            $redis->lPush($this->_wait_list_name($topic),1);
+           // var_dump($this->_delayListName($topic),time()+$delay,$data);
+            $status=$redis->zAdd($this->_delayListName($topic),time()+$delay,$data);
+            $redis->lPush($this->_waitListName($topic),1);
             return $status;
         }
         return $redis->lPush($topic,$data);
@@ -101,7 +101,7 @@ class MQ{
      * @return bool
      */
     public function ack($topic,$ack_key,$message){
-        $ackname=$this->_ack_list_name($topic);
+        $ackname=$this->_ackListName($topic);
         if (is_array($message)){
             if (!isset($message[1]))return true;
             $message=$message[1];
@@ -122,7 +122,7 @@ class MQ{
      */
     public function pop($topic,$ack=true,&$ack_key=null,$ack_timeout=60,$timeout=30){
         assert($ack_timeout>0);//必须大于0,不然会导致消息立即回炉
-        $ackname=$this->_ack_list_name($topic);
+        $ackname=$this->_ackListName($topic);
         $redis=$this->_redis();
         if(!$redis->getOption(Redis::OPT_READ_TIMEOUT)){
             $redis->setOption(Redis::OPT_READ_TIMEOUT, -1);
@@ -145,7 +145,7 @@ class MQ{
         
         $message=$redis->brPop($topic,$timeout);
         if (!$ack&&isset($message[1])){
-            $_ackname=$this->_ack_list_name($message[0]);
+            $_ackname=$this->_ackListName($message[0]);
             $ack_key=substr($message[1],0,$this->_uuid_len);
             $redis->zAdd($_ackname,time()+$ack_timeout,$message[1]);
         }
@@ -158,12 +158,12 @@ class MQ{
      * 延时队列后台处理daemon
      * @param string|array $topic
      */
-    public function delay_daemon($topic){
-        $waitname_=$waitname=$this->_wait_list_name($topic);
+    public function delayDaemon($topic){
+        $waitname_=$waitname=$this->_waitListName($topic);
         if (!is_array($waitname))$waitname=[$waitname=>$topic];
         else $waitname=array_flip($waitname);
         if (is_array($waitname_))$waitname_=array_values($waitname_);
-        $delayname=$this->_delay_list_name($topic);
+        $delayname=$this->_delayListName($topic);
         if (!is_array($delayname))$delayname=[$topic=>$delayname];
         $redis=$this->_redis();
         if(!$redis->getOption(Redis::OPT_READ_TIMEOUT)){
@@ -198,7 +198,7 @@ class MQ{
               //  var_dump($_);
                 if(count($_)==2){
                     list($_topic)=$_;
-                    $delayname_=[$waitname[$_topic]=>$this->_delay_list_name($waitname[$_topic])];
+                    $delayname_=[$waitname[$_topic]=>$this->_delayListName($waitname[$_topic])];
                 }else $delayname_=$delayname;
             }
         }

@@ -1,6 +1,6 @@
 <?php
 include __DIR__."/Bootstarp.php";
-$redismq=\LSYS\Redis\DI::get()->redis_mq();
+$redismq=\LSYS\Redis\DI::get()->redisMQ();
 
 $topic=["task_queue_name"];
 while (true){

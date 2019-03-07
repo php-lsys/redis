@@ -4,7 +4,7 @@ include __DIR__."/Bootstarp.php";
 $config = new LSYS\Config\Redis("aaa.bbb");
 var_dump($config->set("host","sss"));
 // var_dump($config->get("host","sss"));
-var_dump(unserialize(serialize($config))->as_array());
+var_dump(unserialize(serialize($config))->asArray());
 
 
 

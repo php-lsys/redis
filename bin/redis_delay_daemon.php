@@ -15,7 +15,7 @@ if (isset($argv)&&array_search( "--help",$argv)||count($argv)==1){
 	echo "\t--config= config name\n";	
 	exit;
 }
-function cli_param($name,$defalut=NULL){
+function cliParam($name,$defalut=NULL){
 	static $param;
 	if ($param===NULL){
 		global $argv;
@@ -31,17 +31,17 @@ function cli_param($name,$defalut=NULL){
 	return $defalut;
 };
 
-$config=cli_param("config_dir",null);
+$config=cliParam("config_dir",null);
 if ($config!=null) LSYS\Config\File::dirs(array($config));
 
-$config=cli_param("config",null);
+$config=cliParam("config",null);
 
-$topic=cli_param("topic");
+$topic=cliParam("topic");
 $topic=explode(",",$topic);
 foreach ($topic as $k=>$v){
     if (empty($v))unset($topic[$k]);
 }
 if(!count($topic))die("topic is empty");
-$redismq=\LSYS\Redis\DI::get()->redis_mq($config);
-$redismq->delay_daemon($topic);
+$redismq=\LSYS\Redis\DI::get()->redisMQ($config);
+$redismq->delayDaemon($topic);
 

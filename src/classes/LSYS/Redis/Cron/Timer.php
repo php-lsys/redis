@@ -38,7 +38,7 @@ class Timer{
 	 * @param int $var
 	 * @return string
 	 */
-	public static function create_loop($var){
+	public static function createLoop($var){
 		return self::$P.intval($var);
 	}
 	/**
@@ -46,8 +46,8 @@ class Timer{
 	 * @param string $var
 	 * @return boolean|number
 	 */
-	public static function parse_loop($var){
-		if (!self::is_loop($var)) return false;
+	public static function parseLoop($var){
+		if (!self::isLoop($var)) return false;
 		return intval(substr($var, 1));
 	}
 	/**
@@ -55,7 +55,7 @@ class Timer{
 	 * @param string $var
 	 * @return boolean
 	 */
-	public static function is_loop($var){
+	public static function isLoop($var){
 		if ($var===self::LOOP) return false;
 		if (is_array($var)) return false;
 		return self::$P==substr($var,0,1);
@@ -65,7 +65,7 @@ class Timer{
 	 * @param mixed $var
 	 * @return boolean
 	 */
-	public static function is_fix($var){
+	public static function isFix($var){
 		if ($var===self::LOOP) return false;
 		return !is_array($var);
 	}
@@ -75,15 +75,15 @@ class Timer{
 	 * @param int $time
 	 * @return Timer
 	 */
-	public function set_time($time){
+	public function setTime($time){
 		$time=$time<time()?time():$time;
-		$this->set_week(self::LOOP);
-		$this->set_year(date("Y",$time))
-			->set_month(date("n",$time))
-			->set_day(date("j",$time))
-			->set_hours(date("G",$time))
-			->set_minutes(intval(date("i",$time)))
-			->set_seconds(intval(date("s",$time)));
+		$this->setWeek(self::LOOP);
+		$this->setYear(date("Y",$time))
+			->setMonth(date("n",$time))
+			->setDay(date("j",$time))
+			->setHours(date("G",$time))
+			->setMinutes(intval(date("i",$time)))
+			->setSeconds(intval(date("s",$time)));
 		return $this;
 	}
 	/**
@@ -94,7 +94,7 @@ class Timer{
 	 * @param bool $allow_loop 
 	 * @return mixed
 	 */
-	protected function _limit_set($vars,$start,$end,$allow_loop=false){
+	protected function _limitSet($vars,$start,$end,$allow_loop=false){
 		if ($vars===self::LOOP)return $vars;
 		else{
 			if (is_array($vars)){
@@ -109,7 +109,7 @@ class Timer{
 					return array_unique($vars);
 				}else $vars=array_pop($vars);
 			}
-			if($allow_loop&&self::is_loop($vars)){
+			if($allow_loop&&self::isLoop($vars)){
 				$vars=str_replace(self::$P, '', $vars);
 				$vars=intval($vars);
 				return self::$P.$vars;
@@ -125,8 +125,8 @@ class Timer{
 	 * @param mixed $hours
 	 * @return $this
 	 */
-	public function set_hours($hours){
-		$this->hours=$this->_limit_set($hours, 0, 23,true);
+	public function setHours($hours){
+		$this->hours=$this->_limitSet($hours, 0, 23,true);
 		return $this;
 	}
 	/**
@@ -134,8 +134,8 @@ class Timer{
 	 * @param mixed $seconds
 	 * @return $this
 	 */
-	public function set_seconds($seconds){
-		$this->seconds=$this->_limit_set($seconds, 0, 59,true);
+	public function setSeconds($seconds){
+		$this->seconds=$this->_limitSet($seconds, 0, 59,true);
 		return $this;
 	}
 	/**
@@ -143,8 +143,8 @@ class Timer{
 	 * @param mixed $minutes
 	 * @return $this
 	 */
-	public function set_minutes($minutes){
-		$this->minutes=$this->_limit_set($minutes, 0, 59,true);
+	public function setMinutes($minutes){
+		$this->minutes=$this->_limitSet($minutes, 0, 59,true);
 		return $this;
 	}
 	/**
@@ -152,12 +152,12 @@ class Timer{
 	 * @param mixed $day
 	 * @return $this
 	 */
-	public function set_day($day){
-		$this->day=$this->_limit_set($day, 1, 31,true);
-		$this->_check_day();
+	public function setDay($day){
+		$this->day=$this->_limitSet($day, 1, 31,true);
+		$this->_checkDay();
 		return $this;
 	}
-	protected function _check_day(){
+	protected function _checkDay(){
 		if (!is_array($this->month)&&intval($this->month)===2){
 			$day=is_array($this->day)?$this->day:array($this->day);
 			//当只有2月时不能设置 30或31
@@ -169,9 +169,9 @@ class Timer{
 	 * @param mixed $day
 	 * @return $this
 	 */
-	public function set_month($month){
-		$this->month=$this->_limit_set($month, 1, 12,true);
-		$this->_check_day();
+	public function setMonth($month){
+		$this->month=$this->_limitSet($month, 1, 12,true);
+		$this->_checkDay();
 		return $this;
 	}
 	/**
@@ -179,8 +179,8 @@ class Timer{
 	 * @param mixed $day
 	 * @return $this
 	 */
-	public function set_year($year){
-		$this->year=$this->_limit_set($year, date('Y'), 9999,true);
+	public function setYear($year){
+		$this->year=$this->_limitSet($year, date('Y'), 9999,true);
 		return $this;
 	}
 	/**
@@ -188,57 +188,57 @@ class Timer{
 	 * @param mixed $day
 	 * @return $this
 	 */
-	public function set_week($week){
-		$this->week=$this->_limit_set($week, 0, 6);
+	public function setWeek($week){
+		$this->week=$this->_limitSet($week, 0, 6);
 		return $this;
 	}
 	/**
 	 * 取得 时
 	 * @return mixed
 	 */
-	public function get_hours(){
+	public function getHours(){
 		return $this->hours;
 	}
 	/**
 	 * 取得 秒
 	 * @return mixed
 	 */
-	public function get_seconds(){
+	public function getSeconds(){
 		return $this->seconds;
 	}
 	/**
 	 * 取得 分
 	 * @return mixed
 	 */
-	public function get_minutes(){
+	public function getMinutes(){
 		return $this->minutes;
 	}
 	/**
 	 * 取得 日
 	 * @return mixed
 	 */
-	public function get_day(){
+	public function getDay(){
 		return $this->day;
 	}
 	/**
 	 * 取得 月
 	 * @return mixed
 	 */
-	public function get_month(){
+	public function getMonth(){
 		return $this->month;
 	}
 	/**
 	 * 取得 年
 	 * @return mixed
 	 */
-	public function get_year(){
+	public function getYear(){
 		return $this->year;
 	}
 	/**
 	 * 取得 星期
 	 * @return mixed
 	 */
-	public function get_week(){
+	public function getWeek(){
 		return $this->week;
 	}
 }

@@ -2,7 +2,7 @@
 include __DIR__."/Bootstarp.php";
 
 
-$redismq=\LSYS\Redis\DI::get()->redis_mq();
+$redismq=\LSYS\Redis\DI::get()->redisMQ();
 
 //生成消息
 $topic="aaa-------";
