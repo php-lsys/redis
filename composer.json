@@ -17,9 +17,6 @@
 	},
 	"suggest": {
         "ext-uuid" : "*",
-        "lsys/cli" : "~2.0.0 daemon utils"
-    },
-	"bin" : [
-		"bin/redis_delay_daemon"
-	]
+        "lsys/cli" : "~2.0.0"
+    }
 }

@@ -1,4 +1,0 @@
-#!/usr/bin/env php
-<?php
-
-require(__DIR__ . '/redis_delay_daemon.php');
