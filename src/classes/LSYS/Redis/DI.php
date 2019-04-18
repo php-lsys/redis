@@ -2,7 +2,7 @@
 namespace LSYS\Redis;
 /**
  * @method \LSYS\Redis redis($config=null)
- * @method \LSYS\Redis\MQ redisMQ()
+ * @method \LSYS\Redis\MQ redisMQ($config=null)
  */
 class DI extends \LSYS\DI{
     /**
