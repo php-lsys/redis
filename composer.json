@@ -10,7 +10,6 @@
 		}
 	},
 	"require" : {
-		"php" : ">=5.5",
 		"ext-redis" : "*",
 		"lsys/config" : "~2.1.0",
 		"lsys/core" : "~2.1.0"
