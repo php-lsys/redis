@@ -5,7 +5,11 @@
 	"description" : "lsys module redis",
 	"autoload" : {
 		"psr-4" : {
-			"LSYS\\" : "src/classes/LSYS/"
+			"LSYS\\" : [
+				"src/common/classes/LSYS/",
+				"src/config-redis/classes/LSYS/",
+				"src/cron/classes/LSYS/"
+			]
 		}
 	},
 	"require" : {

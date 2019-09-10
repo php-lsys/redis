@@ -7,7 +7,7 @@
  */
 namespace LSYS\Config;
 use LSYS\Config;
-class Redis implements Config,\Serializable{
+class Redis implements Config{
 	protected $_load;
 	/**
 	 * @var \LSYS\Redis
@@ -131,20 +131,5 @@ class Redis implements Config,\Serializable{
 	 */
 	public function readonly (){
 		return false;
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \Serializable::serialize()
-	 */
-	public function serialize () {
-	    return serialize(array($this->_name,$this->_redis,$this->_save));
-	}
-	/**
-	 * {@inheritDoc}
-	 * @see \Serializable::unserialize()
-	 */
-	public function unserialize ($serialized) {
-	    list($name,$redis,$save)=unserialize($serialized);
-	    $this->__construct($name,$redis,$save);
 	}
 }

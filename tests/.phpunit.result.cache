@@ -1,0 +1,1 @@
+C:37:"PHPUnit\Runner\DefaultTestResultCache":261:{a:2:{s:7:"defects";a:2:{s:31:"TestEvent\RedisTest::testConfig";i:4;s:27:"TestEvent\RedisTest::testMQ";i:3;}s:5:"times";a:3:{s:29:"TestEvent\RedisTest::testBase";d:0.035;s:31:"TestEvent\RedisTest::testConfig";d:0.011;s:27:"TestEvent\RedisTest::testMQ";d:0.005;}}}

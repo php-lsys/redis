@@ -1,0 +1,26 @@
+language: php
+services:
+  - mysql
+php:
+  - 7.1
+  
+before_install:
+  - sudo apt-get install redis-server
+  - wget https://pecl.php.net/get/redis-4.1.0.tgz
+    && tar zfvx redis-4.1.0.tgz
+    && cd redis-4.1.0
+    && phpize
+    && ./configure
+    && make
+    && sudo make install
+    && cd ..
+  - echo "extension=redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  
+before_script:
+  - composer install --dev
+  - cd tests
+script: 
+  - ../vendor/bin/phpunit -v
+after_script:
+  - cd ..
+  - travis_retry vendor/bin/php-coveralls -x tests/report/clover.xml -o tests/report/coveralls.json -v

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="autoload.php">
+    <testsuites>
+        <testsuite name="LSYS Tests">
+            <directory suffix="Test.php">./classes/TestRedis</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+         	<directory suffix=".php">../src/common/classes/</directory>
+         	<directory suffix=".php">../src/config-redis/classes/</directory>
+         	<directory suffix=".php">../src/cron/classes/</directory>
+        </whitelist>
+    </filter>
+    <logging>
+      <log type="coverage-html" target="./report"/>
+      <log type="coverage-clover" target="./report/clover.xml"/>
+      <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
+    </logging>
+</phpunit>

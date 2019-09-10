@@ -48,7 +48,7 @@ class MQ{
     protected function _ackListName($topic){
         if (is_array($topic)){
             $out=[];
-            foreach ($topic as $k=>$v){
+            foreach ($topic as $v){
                 $out[$v]=$this->_ackListName($v);
             }
             return $out;
