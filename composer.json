@@ -14,15 +14,14 @@
 	},
 	"require" : {
 		"ext-redis" : "*",
-		"lsys/config" : "~2.0.0",
-		"lsys/core" : "~2.0.0"
+		"lsys/config" : "~0.0.0",
+		"lsys/core" : "~0.0.0"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "~7.1.5",
      	"php-coveralls/php-coveralls":"~v2.0.0"
 	},
 	"suggest": {
-        "ext-uuid" : "*",
-        "lsys/cli" : "~2.0.0"
+        "ext-uuid" : "*"
     }
 }
