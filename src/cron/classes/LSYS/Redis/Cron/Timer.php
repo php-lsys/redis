@@ -38,7 +38,7 @@ class Timer{
 	 * @param int $var
 	 * @return string
 	 */
-	public static function createLoop($var){
+	public static function createLoop($var):string{
 		return self::$P.intval($var);
 	}
 	/**
@@ -55,7 +55,7 @@ class Timer{
 	 * @param string $var
 	 * @return boolean
 	 */
-	public static function isLoop($var){
+	public static function isLoop($var):bool{
 		if ($var===self::LOOP) return false;
 		if (is_array($var)) return false;
 		return self::$P==substr($var,0,1);
@@ -65,7 +65,7 @@ class Timer{
 	 * @param mixed $var
 	 * @return boolean
 	 */
-	public static function isFix($var){
+	public static function isFix($var):bool{
 		if ($var===self::LOOP) return false;
 		return !is_array($var);
 	}
@@ -75,7 +75,7 @@ class Timer{
 	 * @param int $time
 	 * @return Timer
 	 */
-	public function setTime($time){
+	public function setTime(int $time){
 		$time=$time<time()?time():$time;
 		$this->setWeek(self::LOOP);
 		$this->setYear(date("Y",$time))
@@ -94,7 +94,7 @@ class Timer{
 	 * @param bool $allow_loop 
 	 * @return mixed
 	 */
-	protected function _limitSet($vars,$start,$end,$allow_loop=false){
+	protected function _limitSet($vars,int $start,int $end,bool $allow_loop=false){
 		if ($vars===self::LOOP)return $vars;
 		else{
 			if (is_array($vars)){

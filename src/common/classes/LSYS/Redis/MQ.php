@@ -19,13 +19,13 @@ class MQ{
      * @param string $wait_suffix 延时开关队列存储后缀
      * @param string $ack_suffix 消息队列存储后缀
      */
-    public function __construct(Redis $redis,$delay_suffix="_delay",$wait_suffix="_wait",$ack_suffix="_ack"){
+    public function __construct(Redis $redis,string $delay_suffix="_delay",string $wait_suffix="_wait",string $ack_suffix="_ack"){
         $this->_redis=$redis;
         $this->_ack_suffix=$ack_suffix;
         $this->_wait_suffix=$wait_suffix;
         $this->_delay_suffix=$delay_suffix;
     }
-    protected function _delayListName($topic){
+    protected function _delayListName($topic):string{
         if (is_array($topic)){
             $out=array();
             foreach ($topic as $v){
@@ -35,7 +35,7 @@ class MQ{
         }
         return $topic.$this->_delay_suffix;
     }
-    protected function _waitListName($topic){
+    protected function _waitListName($topic):string{
         if (is_array($topic)){
             $out=array();
             foreach ($topic as $v){
@@ -45,7 +45,7 @@ class MQ{
         }
         return $topic.$this->_wait_suffix;
     }
-    protected function _ackListName($topic){
+    protected function _ackListName($topic):string{
         if (is_array($topic)){
             $out=[];
             foreach ($topic as $v){
@@ -63,7 +63,7 @@ class MQ{
      * 生成36位长度UUID
      * @return string
      */
-    protected function _uuid(){
+    protected function _uuid():string{
         //3C79079B-98FF-450C-A2F1-D2B4075D7FD1
         if(!extension_loaded('uuid')){
             $charid = strtoupper ( md5 ( uniqid ( rand (), true ) ) ); //根据当前时间（微秒计）生成唯一id.
@@ -82,7 +82,7 @@ class MQ{
      * @param number $delay 延时时间,单位:秒
      * @return bool
      */
-    public function push($topic,$message,$delay=0){
+    public function push(string $topic,$message,int $delay=0):bool{
         $redis=$this->_redis();
         $data=$this->_uuid().$message;
         if ($delay>0){
@@ -97,10 +97,10 @@ class MQ{
      * 确认消息
      * @param string $topic 队列名
      * @param string $ack_key 消息KEY(多个相同消息需要被确认时确认时通过此值确认那个消息被确认)
-     * @param string $message 消息内容
+     * @param string|array $message 消息内容
      * @return bool
      */
-    public function ack($topic,$ack_key,$message){
+    public function ack(string $topic,string $ack_key,$message):bool{
         $ackname=$this->_ackListName($topic);
         if (is_array($message)){
             if (!isset($message[1]))return true;
@@ -120,7 +120,7 @@ class MQ{
      * @param string $timeout 队列等待超时
      * @return array
      */
-    public function pop($topic,$ack=true,&$ack_key=null,$ack_timeout=60,$timeout=30){
+    public function pop($topic,bool $ack=true,string &$ack_key=null,int $ack_timeout=60,int $timeout=30){
         assert($ack_timeout>0);//必须大于0,不然会导致消息立即回炉
         $ackname=$this->_ackListName($topic);
         $redis=$this->_redis();
@@ -158,7 +158,7 @@ class MQ{
      * 延时队列后台处理daemon
      * @param string|array $topic
      */
-    public function delayDaemon($topic){
+    public function delayDaemon($topic):void{
         $waitname_=$waitname=$this->_waitListName($topic);
         if (!is_array($waitname))$waitname=[$waitname=>$topic];
         else $waitname=array_flip($waitname);

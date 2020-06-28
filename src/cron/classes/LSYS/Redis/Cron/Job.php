@@ -10,12 +10,15 @@ class Job{
 	protected $topic;
 	protected $message;
 	protected $timer;
-	public function __construct($topic,$message,Timer $timer=null){
+	public function __construct(string $topic,$message,Timer $timer=null){
 		$this->topic=$topic;
 		$this->message=$message;
 		if ($timer)$this->setTimer($timer);
 	}
-	public function getTopic(){
+	/**
+	 * @return string
+	 */
+	public function getTopic():string{
 		return $this->topic;
 	}
 	public function getMessage(){

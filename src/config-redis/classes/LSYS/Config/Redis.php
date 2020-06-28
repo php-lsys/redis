@@ -20,7 +20,7 @@ class Redis implements Config{
 	 * php file config
 	 * @param string $name
 	 */
-	public function __construct ($name,RedisDepend $depend=null){
+	public function __construct (string $name,RedisDepend $depend=null){
 	    $depend=$depend?$depend:RedisDepend::get();
 	    $redis=$depend->configRedis();
 	    $redis_key=$depend->configRedisKey();
@@ -52,21 +52,21 @@ class Redis implements Config{
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::loaded()
 	 */
-	public function loaded(){
+	public function loaded():bool{
 		return $this->_load;
 	}
 	/**
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::name()
 	 */
-	public function name(){
+	public function name():string{
 		return $this->_name;
 	}
 	/**
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::get()
 	 */
-	public function get($key,$default=NULL){
+	public function get(string $key,$default=NULL){
 		$group= explode('.', $key);
 		$t=$this->_node;
 		while (count($group)){
@@ -81,7 +81,7 @@ class Redis implements Config{
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::get()
 	 */
-	public function exist($key){
+	public function exist(string $key):bool{
 		$group= explode('.', $key);
 		$t=$this->_node;
 		while (count($group)){
@@ -96,14 +96,14 @@ class Redis implements Config{
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::asArray()
 	 */
-	public function asArray(){
-		return $this->_node;
+	public function asArray():array{
+	    return is_array($this->_node)?$this->_node:[];
 	}
 	/**
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::set()
 	 */
-	public function set($key,$value = NULL){
+	public function set(string $key,$value = NULL):bool{
 		$keys=explode(".",$key);
 		$config=&$this->_node;
 		foreach ($keys as $v){
@@ -129,7 +129,7 @@ class Redis implements Config{
 	 * {@inheritDoc}
 	 * @see \LSYS\Config::readonly()
 	 */
-	public function readonly (){
+	public function readonly ():bool{
 		return false;
 	}
 }

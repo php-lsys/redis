@@ -20,14 +20,14 @@ class Cron{
      * 任务管理类
      * @param Redis $redis
      */
-    public function __construct(Redis $redis,$sleep_queue="lsys_task_sleep"){
+    public function __construct(Redis $redis,string $sleep_queue="lsys_task_sleep"){
         $this->redis=$redis;
         $this->sleep_queue=$sleep_queue;
     }
     /**
      * 重置新加载任务
      */
-    public function reload(){
+    public function reload():void{
         $this->redis->configConnect();
         $this->unSleep('1');
     }
@@ -45,7 +45,7 @@ class Cron{
      * @param int $time
      * @return $this
      */
-    protected function onSleep($time){
+    protected function onSleep(int $time){
         $time=intval($time);
         $time=$time<=0?0:$time;
         $data=$this->redis->brPop($this->sleep_queue,$time);
@@ -63,7 +63,7 @@ class Cron{
     /**
      * 后台监听
      */
-    public function daemon(JobList $job_list,MQ $mq=null){
+    public function daemon(JobList $job_list,MQ $mq=null):void{
         $this->jobs=$job_list;
         $this->redis->configConnect();
         if (!$this->redis->getoption(Redis::OPT_READ_TIMEOUT)){
